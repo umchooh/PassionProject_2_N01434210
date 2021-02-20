@@ -1,0 +1,58 @@
+﻿@model PassionProject_2_N01434210.Models.ViewModels.ShowCustomer
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Customer</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Customer.CustomerFirstName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Customer.CustomerFirstName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Customer.CustomerLastName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Customer.CustomerLastName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Customer.CustomerPhoneNum)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Customer.CustomerPhoneNum)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Customer.CustomerEmail)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Customer.CustomerEmail)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Customer.CustomerShipping)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Customer.CustomerShipping)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Customer.CustomerID }) |
+    @Html.ActionLink("Back to List", "List")
+</p>

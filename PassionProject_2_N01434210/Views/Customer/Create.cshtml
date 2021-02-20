@@ -1,0 +1,75 @@
+﻿@model PassionProject_2_N01434210.Models.ViewModels.UpdateCustomer
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create</h2>
+
+
+@using (Html.BeginForm())
+{
+    //This will set a hidden input field with value "_RequestVerificationToken"
+    //The PlayerController Create Method will look for this token
+    //This helps secure the Create() method from being called from other pages.
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h4>Customer</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Customer.CustomerFirstName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Customer.CustomerFirstName, new { htmlAttributes = new { @class = "form-control", Name = "CustomerFirstName" } })
+                @Html.ValidationMessageFor(model => model.Customer.CustomerFirstName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Customer.CustomerLastName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Customer.CustomerLastName, new { htmlAttributes = new { @class = "form-control", Name = "CustomerLastName" } })
+                @Html.ValidationMessageFor(model => model.Customer.CustomerLastName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Customer.CustomerPhoneNum, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Customer.CustomerPhoneNum, new { htmlAttributes = new { @class = "form-control", Name = "CustomerPhoneNum" } })
+                @Html.ValidationMessageFor(model => model.Customer.CustomerPhoneNum, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Customer.CustomerEmail, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Customer.CustomerEmail, new { htmlAttributes = new { @class = "form-control", Name = "CustomerEmail" } })
+                @Html.ValidationMessageFor(model => model.Customer.CustomerEmail, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Customer.CustomerShipping, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Customer.CustomerShipping, new { htmlAttributes = new { @class = "form-control", Name = "CustomerShipping" } })
+                @Html.ValidationMessageFor(model => model.Customer.CustomerShipping, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "List")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
