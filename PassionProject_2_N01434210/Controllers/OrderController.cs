@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using System.Web.Mvc.Html;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -12,10 +11,9 @@ using System.Web.Script.Serialization;
 using PassionProject_2_N01434210.Models;
 using PassionProject_2_N01434210.Models.ViewModels;
 
-
 namespace PassionProject_2_N01434210.Controllers
 {
-    public class CustomerController : Controller
+    public class OrderController : Controller
     {
         //Http Client is the proper way to connect to a webapi
         //https://docs.microsoft.com/en-us/dotnet/api/system.net.http.httpclient?view=net-5.0
@@ -23,7 +21,8 @@ namespace PassionProject_2_N01434210.Controllers
         private JavaScriptSerializer jss = new JavaScriptSerializer();
         private static readonly HttpClient client;
 
-        static CustomerController()
+
+        static OrderController()
         {
             HttpClientHandler handler = new HttpClientHandler()
             {
@@ -40,16 +39,15 @@ namespace PassionProject_2_N01434210.Controllers
 
         }
 
-
-        // GET: Customer/List    ISSUE????!!!
+        // GET: Order/List
         public ActionResult List()
         {
-            string url = "customerdata/getcustomers";
+            string url = "Orderdata/getorders";
             HttpResponseMessage response = client.GetAsync(url).Result;
             if (response.IsSuccessStatusCode)
             {
-                IEnumerable<CustomerDto> SelectedCustomers = response.Content.ReadAsAsync<IEnumerable<CustomerDto>>().Result;
-                return View(SelectedCustomers);
+                IEnumerable<OrderDto> SelectedOrders = response.Content.ReadAsAsync<IEnumerable<OrderDto>>().Result;
+                return View(SelectedOrders);
             }
             else
             {
@@ -57,25 +55,37 @@ namespace PassionProject_2_N01434210.Controllers
             }
         }
 
-        // GET: Customer/Details/5
+        //GET: Order/Details/5
         public ActionResult Details(int id)
         {
-            ShowCustomer ViewModel = new ShowCustomer();
-            string url = "customerdata/findcustomer/" + id;
+            ShowOrder ViewModel = new ShowOrder();
+            string url = "orderdata/findorder/" + id;
             HttpResponseMessage response = client.GetAsync(url).Result;
             //Can catch the status code (200 OK, 301 REDIRECT), etc.
             //Debug.WriteLine(response.StatusCode);
             if (response.IsSuccessStatusCode)
             {
-                //Put data into player data transfer object
-                CustomerDto SelectedCustomer = response.Content.ReadAsAsync<CustomerDto>().Result;
-                ViewModel.Customer = SelectedCustomer;
-
-
-                url = "customerdata/findordersforcustomer/" + id;
-                response = client.GetAsync(url).Result;
+                //Put data into Order data transfer object
                 OrderDto SelectedOrder = response.Content.ReadAsAsync<OrderDto>().Result;
                 ViewModel.Order = SelectedOrder;
+
+                //We don't need to throw any errors if this is null
+                //A team not having any players is not an issue.
+                url = "orderdata/GetOrdersForCustomer/ " + id;
+                response = client.GetAsync(url).Result;
+                //Can catch the status code (200 OK, 301 REDIRECT), etc.
+                //Debug.WriteLine(response.StatusCode);
+                CustomerDto SelectedCustomer = response.Content.ReadAsAsync<CustomerDto>().Result;
+                ViewModel.Allorders = SelectedCustomer;
+
+
+                url = "customerdata/getproductsfororder/" + id;
+                response = client.GetAsync(url).Result;
+                //Can catch the status code (200 OK, 301 REDIRECT), etc.
+                //Debug.WriteLine(response.StatusCode);
+                //Put data into Team data transfer object
+                IEnumerable<ProductDto> SelectedProducts = response.Content.ReadAsAsync<IEnumerable<ProductDto>>().Result;
+                ViewModel.Orderproducts = SelectedProducts;
 
                 return View(ViewModel);
             }
@@ -85,30 +95,30 @@ namespace PassionProject_2_N01434210.Controllers
             }
         }
 
-        // GET: Customer/Create 
-        [HttpGet]
+
+        // GET: Order/Create
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: Customer/Create
+        // POST: Order/Create
         [HttpPost]
         [ValidateAntiForgeryToken()]
-        public ActionResult Create(Customer CustomerInfo)
+        public ActionResult Create(Order OrderInfo)
         {
-            Debug.WriteLine(CustomerInfo.CustomerFirstName);
-            string url = "CustomerData/AddCustomer";
-            Debug.WriteLine(jss.Serialize(CustomerInfo));
-            HttpContent content = new StringContent(jss.Serialize(CustomerInfo));
+            Debug.WriteLine(OrderInfo.OrderID);
+            string url = "orderdata/addorder";
+            Debug.WriteLine(jss.Serialize(OrderInfo));
+            HttpContent content = new StringContent(jss.Serialize(OrderInfo));
             content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             HttpResponseMessage response = client.PostAsync(url, content).Result;
 
             if (response.IsSuccessStatusCode)
             {
 
-                int Customerid = response.Content.ReadAsAsync<int>().Result;
-                return RedirectToAction("Details", new { id = Customerid });
+                int orderid = response.Content.ReadAsAsync<int>().Result;
+                return RedirectToAction("Details", new { id = orderid });
             }
             else
             {
@@ -118,28 +128,19 @@ namespace PassionProject_2_N01434210.Controllers
 
         }
 
-        // GET: Customer/Edit/5
+
+        // GET: Order/Edit/5
         public ActionResult Edit(int id)
         {
-            UpdateCustomer ViewModel = new UpdateCustomer();
-
-            string url = "customerdata/findcustomer/" + id;
+            string url = "Orderdata/findOrder/" + id;
             HttpResponseMessage response = client.GetAsync(url).Result;
             //Can catch the status code (200 OK, 301 REDIRECT), etc.
             //Debug.WriteLine(response.StatusCode);
             if (response.IsSuccessStatusCode)
             {
-                //Put data into player data transfer object
-                CustomerDto SelectedCustomer = response.Content.ReadAsAsync<CustomerDto>().Result;
-                ViewModel.Customer = SelectedCustomer;
-
-                //get information about teams this player COULD play for.
-                url = "orderdata/getorders";
-                response = client.GetAsync(url).Result;
-                IEnumerable<OrderDto> PotentialOrders= response.Content.ReadAsAsync<IEnumerable<OrderDto>>().Result;
-                ViewModel.Allorders = PotentialOrders;
-
-                return View(ViewModel);
+                //Put data into Team data transfer object
+                OrderDto SelectedOrder = response.Content.ReadAsAsync<OrderDto>().Result;
+                return View(SelectedOrder);
             }
             else
             {
@@ -147,18 +148,18 @@ namespace PassionProject_2_N01434210.Controllers
             }
         }
 
-        // POST: Customer/Edit/5
+        // POST: Order/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken()]
-        public ActionResult Edit(int id, Customer CustomerInfo)
+        public ActionResult Edit(int id, Order OrderInfo)
         {
-            Debug.WriteLine(CustomerInfo.CustomerFirstName);
-            string url = "customerdata/updatecustomer/" + id;
-            Debug.WriteLine(jss.Serialize(CustomerInfo));
-            HttpContent content = new StringContent(jss.Serialize(CustomerInfo));
+            Debug.WriteLine(OrderInfo.OrderID);
+            string url = "orderdata/updateorder/" + id;
+            Debug.WriteLine(jss.Serialize(OrderInfo));
+            HttpContent content = new StringContent(jss.Serialize(OrderInfo));
             content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             HttpResponseMessage response = client.PostAsync(url, content).Result;
-            Debug.WriteLine(response.StatusCode);
+
             if (response.IsSuccessStatusCode)
             {
                 return RedirectToAction("Details", new { id = id });
@@ -169,19 +170,19 @@ namespace PassionProject_2_N01434210.Controllers
             }
         }
 
-        // GET: customer/Delete/5
+        // GET: Order/Delete/5
         [HttpGet]
         public ActionResult DeleteConfirm(int id)
         {
-            string url = "customerdata/findcustomer/" + id;
+            string url = "orderdata/findorder/" + id;
             HttpResponseMessage response = client.GetAsync(url).Result;
             //Can catch the status code (200 OK, 301 REDIRECT), etc.
             //Debug.WriteLine(response.StatusCode);
             if (response.IsSuccessStatusCode)
             {
-                //Put data into player data transfer object
-                CustomerDto SelectedCustomer = response.Content.ReadAsAsync<CustomerDto>().Result;
-                return View(SelectedCustomer);
+                //Put data into Team data transfer object
+                OrderDto SelectedOrder = response.Content.ReadAsAsync<OrderDto>().Result;
+                return View(SelectedOrder);
             }
             else
             {
@@ -189,12 +190,12 @@ namespace PassionProject_2_N01434210.Controllers
             }
         }
 
-        // POST: Customer/Delete/5
+        // POST: Order/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken()]
         public ActionResult Delete(int id)
         {
-            string url = "customerdata/deletecustomer/" + id;
+            string url = "orderdata/deleteorder/" + id;
             //post body is empty
             HttpContent content = new StringContent("");
             HttpResponseMessage response = client.PostAsync(url, content).Result;
@@ -215,6 +216,6 @@ namespace PassionProject_2_N01434210.Controllers
         {
             return View();
         }
-    }
     
+    }
 }

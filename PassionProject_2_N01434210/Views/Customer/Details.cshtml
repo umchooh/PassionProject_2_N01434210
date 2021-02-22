@@ -49,6 +49,25 @@
         <dd>
             @Html.DisplayFor(model => model.Customer.CustomerShipping)
         </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Order.OrderID)
+        </dt>
+        <dd>
+            <div>
+                @foreach (var Order in Model.Allorders)
+                {
+                   <div>
+                       @Html.ActionLink("@Order.OrderDate",
+                      "Details",
+                      "Customers",
+                      new { id = Order.OrderID },
+                      new { })
+                   </div>
+                    
+                    <!--a href="/Customer/Details/@Order.OrderID">OrderDetails</!--a-->
+                }
+            </div>
+        </dd>
 
     </dl>
 </div>

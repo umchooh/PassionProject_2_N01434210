@@ -19,6 +19,7 @@ namespace PassionProject_2_N01434210.Models
         //An order has one customer
         [ForeignKey("Customer")]
         public int CustomerID { get; set; }
+        [ForeignKey("CustomerFK")]
         public virtual Customer Customer { get; set; }
 
         //An order will have many product
@@ -36,6 +37,16 @@ namespace PassionProject_2_N01434210.Models
         public DateTime OrderDate { get; set; }
         [DisplayName("Subtotal")]
         public double OrderSubtotal { get; set; }
+
+        [DisplayName("CustomerID")]
+        public double CustomerID { get; set; }
+        [DisplayName("First Name")]
+        public string CustomerFirstName { get; set; }
+        [DisplayName("Last Name")]
+        public string CustomerLastName { get; set; }
+
+
+
 
     }
 }

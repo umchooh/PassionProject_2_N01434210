@@ -43,7 +43,8 @@ namespace PassionProject_2_N01434210.Controllers
                     CustomerLastName = Customer.CustomerLastName,
                     CustomerPhoneNum = Customer.CustomerPhoneNum,
                     CustomerEmail = Customer.CustomerEmail,
-                    CustomerShipping = Customer.CustomerShipping
+                    CustomerShipping = Customer.CustomerShipping,
+                    
                 };
                 CustomerDtos.Add(NewCustomer);
             }
@@ -79,7 +80,9 @@ namespace PassionProject_2_N01434210.Controllers
                 CustomerLastName = Customer.CustomerLastName,
                 CustomerPhoneNum = Customer.CustomerPhoneNum,
                 CustomerEmail = Customer.CustomerEmail,
-                CustomerShipping = Customer.CustomerShipping
+                CustomerShipping = Customer.CustomerShipping,
+                
+                
             };
 
             //pass along data as 200 status code OK response
@@ -92,10 +95,10 @@ namespace PassionProject_2_N01434210.Controllers
         /// <param name="id">The input customerid</param>
         /// <returns>A list of customers associated with the order</returns>
         /// <example>
-        /// GET: api/OrderData/FindOrdersForCustomer
+        /// GET: api/OrderData/GetOrdersForCustomer
         /// </example>
         [ResponseType(typeof(IEnumerable<OrderDto>))]
-        public IHttpActionResult GetOrdersForCustomer(int id)
+        public IHttpActionResult FindOrdersForCustomer(int id)
         {
             List<Order> Orders = db.Orders.Where(c => c.CustomerID == id)
                 .ToList();
@@ -110,6 +113,7 @@ namespace PassionProject_2_N01434210.Controllers
                     OrderDate = Order.OrderDate,
                     OrderSubtotal = Order.OrderSubtotal
                 };
+                
             }
 
             return Ok(OrderDtos);

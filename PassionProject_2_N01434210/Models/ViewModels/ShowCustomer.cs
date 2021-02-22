@@ -10,5 +10,10 @@ namespace PassionProject_2_N01434210.Models.ViewModels
         public CustomerDto Customer { get; set; }
         //information about the order the customer orders for
         public OrderDto Order { get; set; }
+        //Information about all orders on the customer
+        public IEnumerable<CustomerDto> Allorders { get; set; }
+        public IEnumerable<OrderDto> Allcustomers { get; set; }
+
+
     }
 }

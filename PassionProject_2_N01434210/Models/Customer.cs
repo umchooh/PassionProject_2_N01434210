@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PassionProject_2_N01434210.Models
 {
@@ -36,5 +37,7 @@ namespace PassionProject_2_N01434210.Models
         public string CustomerEmail { get; set; }
         [DisplayName("Shipping Address")]
         public string CustomerShipping { get; set; }
+        [DisplayName("OrderID")]
+        public int OrderID { get; set; }
     }
 }
